@@ -1,5 +1,7 @@
 "Represents an OpenShift DataBase"
 shared interface DataBase {
+    "Returns true if there is a database of this type running"
+    shared formal Boolean running;
     "A URL suitable for connection over JDBC. Contains the host, port and database name"
     shared formal String jdbcUrl;
     "The database name"

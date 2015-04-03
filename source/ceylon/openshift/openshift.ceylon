@@ -36,6 +36,7 @@ shared object openshift {
 
     "If you are running a postgres dagtabase, this will contain information to connect to it"
     shared object postgres satisfies DataBase {
+        running => System.getenv("OPENSHIFT_POSTGRESQL_DB_HOST") exists;
         host => require("OPENSHIFT_POSTGRESQL_DB_HOST");
         port => requireInteger("OPENSHIFT_POSTGRESQL_DB_PORT");
         user => require("OPENSHIFT_POSTGRESQL_DB_USERNAME");
