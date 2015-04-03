@@ -2,6 +2,31 @@
 
 Contains information about the running instance of OpenShift.
 
+# Usage
+
+To import this module in your Ceylon module descriptor:
+
+```ceylon
+import ceylon.openshift "1.1.0";
+```
+
+To turn your module `org.foo/2` into an OpenShift application, you can also install the
+CLI plugin we ship:
+
+```shell
+$ ceylon plugin install ceylon.openshift/1.1.0
+```
+
+And then in your application run:
+
+```shell
+$ ceylon openshift init org.foo/2
+```
+
+This will create the appropriate `.openshift` folder required by the 
+[Ceylon OpenShift cartridge](https://github.com/ceylon/openshift-cartridge), and from
+there you can start your OpenShift application written in Ceylon.
+
 # Example
 
 ```ceylon
