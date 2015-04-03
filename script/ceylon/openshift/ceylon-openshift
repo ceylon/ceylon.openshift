@@ -1,6 +1,6 @@
 #!/bin/sh
 
-USAGE='[OPTION]... init module'
+USAGE='[OPTION]... init [--force] [--aether] module'
 DESCRIPTION='Creates an OpenShift environment for your module'
 LONG_USAGE='    ceylon openshift
 
@@ -13,6 +13,12 @@ OPTIONS
 --help
     Print this help message.
     (--help=options prints help for the various options.)
+
+--force
+    Overwrite openshift files even if they already exist.
+
+--aether
+    Add the `enable_aether` marker (required if your application uses Maven modules).
 
 '
 

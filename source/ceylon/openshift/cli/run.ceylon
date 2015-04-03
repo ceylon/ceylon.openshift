@@ -11,8 +11,27 @@ shared void run() {
     assert(exists command = process.arguments[0]);
     "Usage: ceylon openshift init module/version: only init command supported"
     assert(command == "init");
+    
+    variable Boolean force = false;
+    variable Boolean aether = false;
+    variable String? modSpecOption = null;
+    
+    // see if we have options
+    for(arg in process.arguments.rest){
+        switch(arg)
+        case("--force"){
+            force = true;
+        }
+        case("--aether"){
+            aether = true;
+        }
+        else{
+            modSpecOption = arg;
+            break;
+        }
+    }
     "Usage: ceylon openshift init module/version: module spec required"
-    assert(exists modSpec = process.arguments[1]);
+    assert(exists modSpec = modSpecOption);
     
     assert(exists res= `module ceylon.openshift`.resourceByPath(".openshift/config/ceylon.properties"));
     Integer start;
@@ -43,22 +62,28 @@ shared void run() {
                     } 
                     return true;
                 }
+                void copy(String name, Nil localFile, File f) {
+                    if(name == ".openshift/config/ceylon.properties"){
+                        value settingsFile = localFile.createFile();
+                        try (overwriter = settingsFile.Overwriter()) {
+                            overwriter.writeLine("ceylon_module=``modSpec``");
+                        }
+                        print("Generated");
+                    }else{
+                        f.copy(localFile);
+                        print("Copied");
+                    }
+                }
+                
                 shared actual void file(File f) {
                     if(f.path.absolutePath.string.startsWith(resourcesPath)){
                         String name = ".openshift/" + f.path.absolutePath.string.spanFrom(resourcesPath.size);
                         process.write("Installing file ``name``: ");
                         value localPath = parsePath(name);
                         if(is Nil localFile = localPath.resource){
-                            if(name == ".openshift/config/ceylon.properties"){
-                                value settingsFile = localFile.createFile();
-                                try (overwriter = settingsFile.Overwriter()) {
-                                    overwriter.writeLine("ceylon_module=``modSpec``");
-                                }
-                                print("Generated");
-                            }else{
-                                f.copy(localFile);
-                                print("Copied");
-                            }
+                            copy(name, localFile, f);
+                        }else if(is File localFile = localPath.resource, force){
+                            copy(name, localFile.delete(), f);
                         }else{
                             print("Skipped (already exists)");
                         }
@@ -68,6 +93,25 @@ shared void run() {
             rootPath.visit(visitor);
         }
         zipSystem.close();
+        if(aether){
+            value name = ".openshift/markers/enable_aether";
+            process.write("Installing file ``name``: ");
+            value localPath = parsePath(name);
+            if(is Nil localFile = localPath.resource){
+                value settingsFile = localFile.createFile();
+                try (overwriter = settingsFile.Overwriter()) {
+                    overwriter.writeLine("");
+                    print("Generated");
+                }
+            }else if(is File localFile = localPath.resource, force){
+                try (overwriter = localFile.Overwriter()) {
+                    overwriter.writeLine("");
+                    print("Generated");
+                }
+            }else{
+                print("Skipped (already exists)");
+            }
+        }
     }
     
 }
