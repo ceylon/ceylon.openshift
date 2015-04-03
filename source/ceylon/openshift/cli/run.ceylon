@@ -6,6 +6,12 @@ import ceylon.file {
     createZipFileSystem,
     Directory
 }
+import java.util {
+    EnumSet, JSet = Set
+}
+import java.nio.file.attribute {
+    PosixFilePermission { ... }
+}
 shared void run() {
     "Usage: ceylon openshift init module/version: command required"
     assert(exists command = process.arguments[0]);
@@ -70,7 +76,15 @@ shared void run() {
                         }
                         print("Generated");
                     }else{
-                        f.copy(localFile);
+                        value newFile = f.copy(localFile, true);
+                        // zip file does not preserve executable bit, and opensfhit complains if they're not
+                        if(name.startsWith(".openshift/action_hooks")){
+                            JSet<PosixFilePermission> perms =
+                                    EnumSet<PosixFilePermission>.\iof(\iOWNER_READ, \iOWNER_WRITE, \iOWNER_EXECUTE, 
+                                \iGROUP_READ, \iGROUP_WRITE, \iGROUP_EXECUTE,
+                                \iOTHERS_READ);
+                            newFile.writeAttribute(["posix", "permissions"], perms);
+                        }
                         print("Copied");
                     }
                 }
