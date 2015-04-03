@@ -1,0 +1,21 @@
+#!/bin/sh
+
+USAGE='[OPTION]... init module'
+DESCRIPTION='Creates an OpenShift environment for your module'
+LONG_USAGE='    ceylon openshift
+
+Run with:
+
+    ceylon openshift init module
+
+OPTIONS
+
+--help
+    Print this help message.
+    (--help=options prints help for the various options.)
+
+'
+
+. $CEYLON_HOME/bin/ceylon-sh-setup
+
+$CEYLON run --run ceylon.openshift.cli::run ceylon.openshift/1.1.0 "$@"

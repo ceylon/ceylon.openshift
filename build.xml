@@ -1,0 +1,122 @@
+<project name="Ceylon For OpenShift" basedir="." default="test">
+
+    <property environment="env"/>
+    <property name="ceylon.home" value="${env.CEYLON_HOME}"/>
+    <property name="ceylon.home" value="../ceylon-dist/dist"/>
+    <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
+    <property name="source.encoding" value="UTF-8"/>
+    <property name="source.version" value="1.1.0"/>
+
+    <property name="ceylon.verbosity" value="false"/>
+    <property name="ceylon.executable" value="${ceylon.home}/bin/ceylon"/>
+    <property name="out.repo" location="modules"/>
+    
+    <!-- Local repository -->
+    <property name="ceylon.repo.dir" location="${user.home}/.ceylon/repo" />
+    
+    <path id="ant-tasks">
+        <pathelement location="${ceylon.ant.lib}"/>
+    </path>
+    
+    <typedef resource="com/redhat/ceylon/ant/antlib.xml" classpathref="ant-tasks"/>
+    
+    <target name="clean"
+        description="Deletes the test-modules and modules directories">
+        <delete dir="${out.repo}"/>
+    </target>
+    
+    <target name="compile"
+            description="Compiles the Ceylon OpenShift module">
+        <ceylon-compile executable="${ceylon.executable}"
+            verbose="${ceylon.verbosity}"
+            encoding="${source.encoding}"
+            pack200="true"
+            out="${out.repo}">
+            <module name="ceylon.openshift"/>
+        </ceylon-compile>
+    </target>
+
+    <target name="doc" 
+            description="Documents the OpenShift module">
+        
+        <ceylon-doc executable="${ceylon.executable}"
+            includesourcecode="true"
+            nomtimecheck="true"
+            encoding="UTF-8">
+            <module name="ceylon.openshift"/>
+            <linkset>
+                <link pattern="ceylon" url="http://modules.ceylon-lang.org/1/"/>
+            </linkset>
+        </ceylon-doc>
+        
+    </target>
+
+    <target name="plugin" 
+            description="Packs the OpenShift module CLI plugin">
+        
+        <ceylon-plugin executable="${ceylon.executable}"
+		mode="pack">
+            <module name="ceylon.openshift"/>
+        </ceylon-plugin>
+        
+    </target>
+
+    <target name="publish" depends=""
+            description="Copies the OpenShift module to the user's repository">
+	<!-- ceylon-copy does not work in 1.1
+        <ceylon-copy executable="${ceylon.executable}"
+            out="+USER">
+            <module name="ceylon.openshift" version="${source.version}"/>
+        </ceylon-copy>
+	-->
+        <ceylon-compile executable="${ceylon.executable}"
+            verbose="${ceylon.verbosity}"
+            encoding="${source.encoding}"
+            pack200="true"
+            out="+USER">
+            <module name="ceylon.openshift"/>
+        </ceylon-compile>
+        <ceylon-doc executable="${ceylon.executable}"
+            includesourcecode="true"
+            nomtimecheck="true"
+            encoding="${source.encoding}"
+	    out="+USER">
+            <module name="ceylon.openshift"/>
+            <linkset>
+                <link pattern="ceylon" url="http://modules.ceylon-lang.org/1/"/>
+            </linkset>
+        </ceylon-doc>
+        <ceylon-plugin executable="${ceylon.executable}"
+		mode="pack"
+		out="+USER">
+            <module name="ceylon.openshift"/>
+        </ceylon-plugin>
+    </target>
+
+    <target name="publish-herd" depends="">
+    <fail message="Please specify a target Herd upload repo url with -Dherd.repo=..." unless="herd.repo"/>
+    <fail message="Please specify a target Herd user name with -Dherd.user=..." unless="herd.user"/>
+    <fail message="Please specify a target Herd password with -Dherd.pass=..." unless="herd.pass"/>
+        
+	<!-- ceylon-copy does not work in 1.1
+        <ceylon-copy executable="${ceylon.executable}"
+            out="${herd.repo}"
+            user="${herd.user}"
+            pass="${herd.pass}"
+	>
+            <module name="ceylon.openshift"/>
+        </ceylon-copy>
+	-->
+        
+
+    </target>
+
+    <target name="install-plugin" depends="plugin">
+        <ceylon-plugin executable="${ceylon.executable}"
+		force="true"
+		mode="install">
+            <module name="ceylon.openshift"/>
+        </ceylon-plugin>
+    </target>
+
+</project>
