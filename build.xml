@@ -5,7 +5,7 @@
     <property name="ceylon.home" value="../ceylon-dist/dist"/>
     <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
     <property name="source.encoding" value="UTF-8"/>
-    <property name="source.version" value="1.1.0"/>
+    <property name="source.version" value="1.1.1"/>
 
     <property name="ceylon.verbosity" value="false"/>
     <property name="ceylon.executable" value="${ceylon.home}/bin/ceylon"/>
@@ -53,10 +53,11 @@
 
     <target name="plugin" 
             description="Packs the OpenShift module CLI plugin">
-        
+        <!-- offline is a workaround in Ceylon 1.1: https://github.com/ceylon/ceylon-compiler/issues/2114 -->
         <ceylon-plugin executable="${ceylon.executable}"
+		offline="true"
 		mode="pack">
-            <module name="ceylon.openshift"/>
+            <module name="ceylon.openshift" version="${source.version}"/>
         </ceylon-plugin>
         
     </target>
@@ -86,10 +87,12 @@
                 <link pattern="ceylon" url="http://modules.ceylon-lang.org/1/"/>
             </linkset>
         </ceylon-doc>
+        <!-- offline is a workaround in Ceylon 1.1: https://github.com/ceylon/ceylon-compiler/issues/2114 -->
         <ceylon-plugin executable="${ceylon.executable}"
+		offline="true"
 		mode="pack"
 		out="+USER">
-            <module name="ceylon.openshift"/>
+            <module name="ceylon.openshift" version="${source.version}"/>
         </ceylon-plugin>
     </target>
 
@@ -115,7 +118,7 @@
         <ceylon-plugin executable="${ceylon.executable}"
 		force="true"
 		mode="install">
-            <module name="ceylon.openshift"/>
+            <module name="ceylon.openshift" version="${source.version}"/>
         </ceylon-plugin>
     </target>
 

@@ -8,25 +8,8 @@ shared object openshift {
     "Returns true if running on OpenShift"
     shared Boolean running => System.getenv("OPENSHIFT_APP_NAME") exists;
 
-    String require(String name){
-        assert(exists val = System.getenv(name));
-        return val;
-    }
-
-    Integer requireInteger(String name){
-        value p = require(name);
-        assert(exists parsed = parseInteger(p));
-        return parsed;
-    }
-
     "The name of your application"
     shared String name => require("OPENSHIFT_APP_NAME");
-
-    "The IP you should bind to"
-    shared String ip => require("OPENSHIFT_CEYLON_IP");
-
-    "The port you should bind to"
-    shared Integer port => requireInteger("OPENSHIFT_CEYLON_HTTP_PORT");
 
     "The public host name under which your application will be accessible"
     shared String dns => require("OPENSHIFT_APP_DNS");
@@ -34,15 +17,38 @@ shared object openshift {
     "Your application path"
     shared String repository => require("OPENSHIFT_REPO_DIR");
 
-    "If you are running a postgres dagtabase, this will contain information to connect to it"
-    shared object postgres satisfies DataBase {
-        running => System.getenv("OPENSHIFT_POSTGRESQL_DB_HOST") exists;
-        host => require("OPENSHIFT_POSTGRESQL_DB_HOST");
-        port => requireInteger("OPENSHIFT_POSTGRESQL_DB_PORT");
-        user => require("OPENSHIFT_POSTGRESQL_DB_USERNAME");
-        password => require("OPENSHIFT_POSTGRESQL_DB_PASSWORD");
-        name => outer.name;
-        jdbcUrl => "jdbc:postgresql://``host``:``port``/``name``";
+    "Return information about the given cartridge, where `cartridgeName` can be any cartridge type
+     running on OpenShift, such as `ceylon`, `vertx` or other"
+    shared Cartridge cartridge(String cartridgeName){
+        object cart satisfies Cartridge {
+            name => cartridgeName;
+        }
+        return cart;
     }
+
+    "If you are running a Ceylon cartridge, this will contain information about it"
+    shared Cartridge ceylon = cartridge("ceylon");
+
+    "If you are running a Vertx cartridge, this will contain information about it"
+    shared Cartridge vertx = cartridge("vertx");
+
+    "Return information about the given database, where `dataBaseName` can be any database type
+     running on OpenShift, such as `postgresql`, `mysql`, `mongodb` or other"
+    shared DataBase dataBase(String dataBaseName){
+        object db satisfies DataBase {
+            name => outer.name;
+            type => dataBaseName;
+        }
+        return db;
+    }
+
+    "If you are running a postgres database, this will contain information to connect to it"
+    shared DataBase postgres = dataBase("postgresql");
+
+    "If you are running a mysql database, this will contain information to connect to it"
+    shared DataBase mysql = dataBase("mysql");
+
+    "If you are running a mongodb database, this will contain information to connect to it"
+    shared DataBase mongodb = dataBase("mongodb");
 }
 
