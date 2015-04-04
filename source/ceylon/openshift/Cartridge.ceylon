@@ -15,7 +15,7 @@ shared interface Cartridge {
     shared String ip => require(environmentVariableName("IP"));
     
     "The port you should bind to"
-    shared Integer port => requireInteger(environmentVariableName("HTTP_PORT"));
+    shared Integer port => requireInteger(environmentVariableName(name == "vertx" then "PORT" else "HTTP_PORT"));
 
     String environmentVariableName(String postfix){
         return "OPENSHIFT_``name.uppercased``_``postfix``";
