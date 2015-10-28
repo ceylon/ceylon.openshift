@@ -40,7 +40,7 @@
  First, install the `ceylon openshift` command (you only 
  need to do this once):
  
-     ceylon plugin install ceylon.openshift/1.1.1
+     ceylon plugin install ceylon.openshift/1.2.0
  
  Then to convert your Ceylon application into a Ceylon 
  OpenShift application:
