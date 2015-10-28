@@ -45,7 +45,7 @@
             encoding="UTF-8">
             <module name="ceylon.openshift"/>
             <linkset>
-                <link pattern="ceylon" url="http://modules.ceylon-lang.org/1/"/>
+                <link pattern="ceylon" url="http://modules.ceylon-lang.org/repo/1/"/>
             </linkset>
         </ceylon-doc>
         
@@ -53,11 +53,9 @@
 
     <target name="plugin" 
             description="Packs the OpenShift module CLI plugin">
-        <!-- offline is a workaround in Ceylon 1.1: https://github.com/ceylon/ceylon-compiler/issues/2114 -->
         <ceylon-plugin executable="${ceylon.executable}"
-		offline="true"
 		mode="pack">
-            <module name="ceylon.openshift" version="${source.version}"/>
+            <module name="ceylon.openshift"/>
         </ceylon-plugin>
         
     </target>
@@ -84,15 +82,13 @@
 	    out="+USER">
             <module name="ceylon.openshift"/>
             <linkset>
-                <link pattern="ceylon" url="http://modules.ceylon-lang.org/1/"/>
+                <link pattern="ceylon" url="http://modules.ceylon-lang.org/repo/1/"/>
             </linkset>
         </ceylon-doc>
-        <!-- offline is a workaround in Ceylon 1.1: https://github.com/ceylon/ceylon-compiler/issues/2114 -->
         <ceylon-plugin executable="${ceylon.executable}"
-		offline="true"
 		mode="pack"
 		out="+USER">
-            <module name="ceylon.openshift" version="${source.version}"/>
+            <module name="ceylon.openshift"/>
         </ceylon-plugin>
     </target>
 
