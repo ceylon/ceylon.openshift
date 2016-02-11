@@ -63,6 +63,7 @@
     <target name="publish" depends="compile,doc,plugin"
             description="Copies the OpenShift module to the user's repository">
         <ceylon-copy executable="${ceylon.executable}"
+            all="true"
             out="+USER">
             <module name="ceylon.openshift" version="${source.version}"/>
         </ceylon-copy>
@@ -74,11 +75,12 @@
         <fail message="Please specify a target Herd password with -Dherd.pass=..." unless="herd.pass"/>
             
         <ceylon-copy executable="${ceylon.executable}"
+                all="true"
                 out="${herd.repo}"
                 user="${herd.user}"
                 pass="${herd.pass}"
 	    >
-            <module name="ceylon.openshift"/>
+            <module name="ceylon.openshift" version="${source.version}"/>
         </ceylon-copy>
     </target>
 
