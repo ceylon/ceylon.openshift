@@ -1,11 +1,11 @@
-<project name="Ceylon For OpenShift" basedir="." default="test">
+<project name="Ceylon For OpenShift" basedir="." default="publish">
 
     <property environment="env"/>
     <property name="ceylon.home" value="${env.CEYLON_HOME}"/>
     <property name="ceylon.home" value="../ceylon-dist/dist"/>
     <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
     <property name="source.encoding" value="UTF-8"/>
-    <property name="source.version" value="1.1.1"/>
+    <property name="source.version" value="1.2.1"/>
 
     <property name="ceylon.verbosity" value="false"/>
     <property name="ceylon.executable" value="${ceylon.home}/bin/ceylon"/>
@@ -45,7 +45,7 @@
             encoding="UTF-8">
             <module name="ceylon.openshift"/>
             <linkset>
-                <link pattern="ceylon" url="http://modules.ceylon-lang.org/repo/1/"/>
+                <link pattern="ceylon" url="https://modules.ceylon-lang.org/repo/1/"/>
             </linkset>
         </ceylon-doc>
         
@@ -60,54 +60,26 @@
         
     </target>
 
-    <target name="publish" depends=""
+    <target name="publish" depends="compile,doc,plugin"
             description="Copies the OpenShift module to the user's repository">
-	<!-- ceylon-copy does not work in 1.1
         <ceylon-copy executable="${ceylon.executable}"
             out="+USER">
             <module name="ceylon.openshift" version="${source.version}"/>
         </ceylon-copy>
-	-->
-        <ceylon-compile executable="${ceylon.executable}"
-            verbose="${ceylon.verbosity}"
-            encoding="${source.encoding}"
-            pack200="true"
-            out="+USER">
-            <module name="ceylon.openshift"/>
-        </ceylon-compile>
-        <ceylon-doc executable="${ceylon.executable}"
-            includesourcecode="true"
-            nomtimecheck="true"
-            encoding="${source.encoding}"
-	    out="+USER">
-            <module name="ceylon.openshift"/>
-            <linkset>
-                <link pattern="ceylon" url="http://modules.ceylon-lang.org/repo/1/"/>
-            </linkset>
-        </ceylon-doc>
-        <ceylon-plugin executable="${ceylon.executable}"
-		mode="pack"
-		out="+USER">
-            <module name="ceylon.openshift"/>
-        </ceylon-plugin>
     </target>
 
     <target name="publish-herd" depends="">
-    <fail message="Please specify a target Herd upload repo url with -Dherd.repo=..." unless="herd.repo"/>
-    <fail message="Please specify a target Herd user name with -Dherd.user=..." unless="herd.user"/>
-    <fail message="Please specify a target Herd password with -Dherd.pass=..." unless="herd.pass"/>
-        
-	<!-- ceylon-copy does not work in 1.1
+        <fail message="Please specify a target Herd upload repo url with -Dherd.repo=..." unless="herd.repo"/>
+        <fail message="Please specify a target Herd user name with -Dherd.user=..." unless="herd.user"/>
+        <fail message="Please specify a target Herd password with -Dherd.pass=..." unless="herd.pass"/>
+            
         <ceylon-copy executable="${ceylon.executable}"
-            out="${herd.repo}"
-            user="${herd.user}"
-            pass="${herd.pass}"
-	>
+                out="${herd.repo}"
+                user="${herd.user}"
+                pass="${herd.pass}"
+	    >
             <module name="ceylon.openshift"/>
         </ceylon-copy>
-	-->
-        
-
     </target>
 
     <target name="install-plugin" depends="plugin">
