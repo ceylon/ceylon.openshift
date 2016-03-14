@@ -24,4 +24,4 @@ OPTIONS
 
 . $CEYLON_HOME/bin/ceylon-sh-setup
 
-$CEYLON run --run ceylon.openshift.cli::run ceylon.openshift/1.2.1 "$@"
+$CEYLON run --run ceylon.openshift.cli::run ceylon.openshift/1.2.2 "$@"
