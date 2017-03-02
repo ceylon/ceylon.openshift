@@ -7,14 +7,14 @@ Contains information about the running instance of OpenShift.
 To import this module in your Ceylon module descriptor:
 
 ```ceylon
-import ceylon.openshift "1.3.1";
+import ceylon.openshift "1.3.2";
 ```
 
 To turn your module `org.foo/2` into an OpenShift application, you can also install the
 CLI plugin we ship:
 
 ```shell
-$ ceylon plugin install ceylon.openshift/1.3.1
+$ ceylon plugin install ceylon.openshift/1.3.2
 ```
 
 And then in your application run:
